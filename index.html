@@ -1,0 +1,1652 @@
+<!doctype html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Agenthub Admin Panel</title>
+    <script>
+      tailwind = {
+        config: {
+          darkMode: "class",
+          theme: {
+            extend: {
+              colors: {
+                ink: "#1f2937",
+                cloud: "#f8fafc",
+                surf: "#d9f99d",
+                steel: "#334155",
+                ember: "#fb923c",
+                aqua: "#14b8a6"
+              },
+              boxShadow: {
+                card: "0 10px 25px -12px rgba(15, 23, 42, 0.45)"
+              }
+            }
+          }
+        }
+      };
+    </script>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600;700&family=Space+Grotesk:wght@500;700&display=swap"
+      rel="stylesheet"
+    />
+    <style>
+      :root {
+        color-scheme: dark;
+      }
+
+      body {
+        font-family: "IBM Plex Sans", sans-serif;
+        background:
+          radial-gradient(circle at 8% 12%, rgba(20, 184, 166, 0.18), transparent 30%),
+          radial-gradient(circle at 92% 7%, rgba(251, 146, 60, 0.14), transparent 32%),
+          linear-gradient(120deg, #0f172a 0%, #111827 52%, #020617 100%);
+        overflow-x: hidden;
+      }
+
+      .dark body {
+        background:
+          radial-gradient(circle at 9% 10%, rgba(20, 184, 166, 0.2), transparent 34%),
+          radial-gradient(circle at 88% 6%, rgba(251, 146, 60, 0.18), transparent 36%),
+          linear-gradient(120deg, #f8fafc 0%, #e2e8f0 55%, #f1f5f9 100%);
+      }
+
+      .brand-font {
+        font-family: "Space Grotesk", sans-serif;
+      }
+
+      .section-shell {
+        animation: rise-in 420ms ease both;
+      }
+
+      @keyframes rise-in {
+        from {
+          opacity: 0;
+          transform: translateY(12px);
+        }
+        to {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
+
+      .stagger {
+        animation: fade-in 350ms ease both;
+      }
+
+      @keyframes fade-in {
+        from {
+          opacity: 0;
+          transform: translateY(8px);
+        }
+        to {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
+
+      html[data-theme="dark"] .data-table th:nth-child(odd),
+      html[data-theme="dark"] .data-table td:nth-child(odd) {
+        background-color: rgba(148, 163, 184, 0.08);
+      }
+
+      .data-table {
+        width: 100%;
+        table-layout: fixed;
+      }
+
+      .data-table th,
+      .data-table td {
+        white-space: normal;
+        overflow-wrap: anywhere;
+        word-break: break-word;
+      }
+
+      html[data-theme="dark"] .data-table th:nth-child(even),
+      html[data-theme="dark"] .data-table td:nth-child(even) {
+        background-color: rgba(148, 163, 184, 0.15);
+      }
+
+      html[data-theme="light"] .data-table th:nth-child(odd),
+      html[data-theme="light"] .data-table td:nth-child(odd) {
+        background-color: rgba(148, 163, 184, 0.18);
+      }
+
+      html[data-theme="light"] .data-table th:nth-child(even),
+      html[data-theme="light"] .data-table td:nth-child(even) {
+        background-color: rgba(148, 163, 184, 0.3);
+      }
+
+      html[data-theme="dark"] .data-table th,
+      html[data-theme="dark"] .data-table td {
+        color: #e8f0fb;
+      }
+
+      html[data-theme="dark"] .data-table td::before,
+      html[data-theme="dark"] .data-table th {
+        color: #cbdaf0;
+      }
+
+      html[data-theme="light"] .data-table th,
+      html[data-theme="light"] .data-table td {
+        color: #1f2937;
+      }
+
+      html[data-theme="light"] .data-table td::before,
+      html[data-theme="light"] .data-table th {
+        color: #334155;
+      }
+
+      html[data-theme="dark"] .skills-panel {
+        background:
+          linear-gradient(145deg, rgba(2, 6, 23, 0.75), rgba(30, 41, 59, 0.6)),
+          radial-gradient(circle at right, rgba(20, 184, 166, 0.26), transparent 38%);
+      }
+
+      html[data-theme="light"] .skills-panel {
+        background:
+          linear-gradient(145deg, rgba(226, 232, 240, 0.95), rgba(241, 245, 249, 0.95)),
+          radial-gradient(circle at right, rgba(20, 184, 166, 0.2), transparent 40%);
+      }
+
+      html[data-theme="dark"] .section-shell {
+        background-color: rgba(2, 6, 23, 0.88) !important;
+        border-color: rgba(71, 85, 105, 0.8) !important;
+      }
+
+      html[data-theme="light"] .section-shell {
+        background-color: rgba(255, 255, 255, 0.95) !important;
+        border-color: rgba(226, 232, 240, 0.95) !important;
+      }
+
+      html[data-theme="dark"] .section-shell h1,
+      html[data-theme="dark"] .section-shell h2,
+      html[data-theme="dark"] .section-shell h3 {
+        color: #f8fafc !important;
+      }
+
+      html[data-theme="light"] .section-shell h1,
+      html[data-theme="light"] .section-shell h2,
+      html[data-theme="light"] .section-shell h3 {
+        color: #0f172a !important;
+      }
+
+      html[data-theme="dark"] .section-shell header p,
+      html[data-theme="dark"] .section-shell article p {
+        color: #dbe7f5 !important;
+      }
+
+      html[data-theme="dark"] #sidebarPanel {
+        background-color: rgba(2, 6, 23, 0.94) !important;
+        border-color: rgba(71, 85, 105, 0.84) !important;
+      }
+
+      html[data-theme="dark"] #sidebarPanel .brand-font,
+      html[data-theme="dark"] #sidebarPanel p {
+        color: #e5edf8 !important;
+      }
+
+      html[data-theme="dark"] #sidebarPanel .nav-link {
+        color: #dbe7f5 !important;
+      }
+
+      html[data-theme="dark"] #themeToggle,
+      html[data-theme="dark"] #themeToggleTablet {
+        background-color: rgba(15, 23, 42, 0.9) !important;
+        border-color: rgba(71, 85, 105, 0.78) !important;
+      }
+
+      html[data-theme="light"] #themeToggle,
+      html[data-theme="light"] #themeToggleTablet {
+        background-color: rgba(248, 250, 252, 0.96) !important;
+        border-color: rgba(148, 163, 184, 0.65) !important;
+      }
+
+      html[data-theme="dark"] #metricsGrid .metric-card,
+      html[data-theme="dark"] #skillsGrid .skill-card {
+        background-color: rgba(2, 6, 23, 0.9) !important;
+        border-color: rgba(71, 85, 105, 0.8) !important;
+      }
+
+      html[data-theme="dark"] #skillsInfoCard {
+        background-color: rgba(2, 6, 23, 0.78) !important;
+        border-color: rgba(71, 85, 105, 0.76) !important;
+      }
+
+      html[data-theme="light"] #skillsInfoCard {
+        background-color: rgba(241, 245, 249, 0.92) !important;
+        border-color: rgba(148, 163, 184, 0.66) !important;
+      }
+
+      html[data-theme="dark"] .activity-slot {
+        background-color: rgba(2, 6, 23, 0.72) !important;
+        border: 1px solid rgba(71, 85, 105, 0.72);
+      }
+
+      html[data-theme="light"] .activity-slot {
+        background-color: rgba(226, 232, 240, 0.9) !important;
+        border: 1px solid rgba(148, 163, 184, 0.7);
+      }
+
+      html[data-theme="dark"] .activity-slot-label {
+        color: #dbe7f5 !important;
+      }
+
+      html[data-theme="light"] .activity-slot-label {
+        color: #334155 !important;
+      }
+
+      html[data-theme="dark"] #metricsGrid .metric-card p,
+      html[data-theme="dark"] #skillsGrid .skill-card p,
+      html[data-theme="dark"] #skillsGrid .skill-card h3,
+      html[data-theme="dark"] #metricsGrid .metric-card .brand-font {
+        color: #e8f0fb !important;
+      }
+
+      html[data-theme="dark"] .dropdown-menu > summary {
+        background-color: rgba(2, 6, 23, 0.88) !important;
+        border-color: rgba(71, 85, 105, 0.82) !important;
+        color: #e5edf8 !important;
+      }
+
+      html[data-theme="dark"] .dropdown-menu > summary:hover {
+        background-color: rgba(15, 23, 42, 0.96) !important;
+      }
+
+      html[data-theme="dark"] .dropdown-panel {
+        background-color: rgba(2, 6, 23, 0.97) !important;
+        border-color: rgba(71, 85, 105, 0.85) !important;
+      }
+
+      html[data-theme="dark"] .dropdown-panel .action-item {
+        color: #e5edf8 !important;
+      }
+
+      html[data-theme="dark"] .dropdown-panel .action-item:hover {
+        background-color: rgba(30, 41, 59, 0.9) !important;
+      }
+
+      html[data-theme="dark"] .modal-backdrop {
+        background-color: rgba(2, 6, 23, 0.78) !important;
+      }
+
+      html[data-theme="dark"] #modalPanel {
+        background-color: rgba(2, 6, 23, 0.97) !important;
+        border-color: rgba(71, 85, 105, 0.86) !important;
+      }
+
+      html[data-theme="dark"] #modalTitle,
+      html[data-theme="dark"] #modalContent {
+        color: #e8f0fb !important;
+      }
+
+      html[data-theme="dark"] #modalClose {
+        background-color: rgba(15, 23, 42, 0.82) !important;
+        border-color: rgba(71, 85, 105, 0.84) !important;
+        color: #e5edf8 !important;
+      }
+
+      html[data-theme="dark"] #modalClose:hover {
+        background-color: rgba(30, 41, 59, 0.92) !important;
+      }
+
+      html[data-theme="dark"] .data-table tr {
+        background-color: rgba(2, 6, 23, 0.8) !important;
+        border-color: rgba(71, 85, 105, 0.75) !important;
+      }
+
+      html[data-theme="light"] .section-shell header p,
+      html[data-theme="light"] .section-shell article p {
+        color: #475569 !important;
+      }
+
+      .modal-backdrop {
+        background-color: rgba(2, 6, 23, 0.66);
+        backdrop-filter: blur(4px);
+      }
+
+      .focusable:focus-visible,
+      button:focus-visible,
+      summary:focus-visible,
+      [role="button"]:focus-visible {
+        outline: 2px solid #14b8a6;
+        outline-offset: 2px;
+      }
+
+      .modal-panel {
+        transform: translateY(12px) scale(0.98);
+        opacity: 0;
+        transition: transform 220ms ease, opacity 220ms ease;
+      }
+
+      .modal-panel-open {
+        transform: translateY(0) scale(1);
+        opacity: 1;
+      }
+
+      .modal-bg {
+        opacity: 0;
+        transition: opacity 220ms ease;
+      }
+
+      .modal-bg-open {
+        opacity: 1;
+      }
+
+      .dropdown-panel {
+        opacity: 0;
+        transform: translateY(-6px) scale(0.98);
+        pointer-events: none;
+        transition: opacity 180ms ease, transform 180ms ease;
+      }
+
+      .theme-option {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        width: 1.25rem;
+        height: 1.25rem;
+        border-radius: 999px;
+        transition: background-color 180ms ease, color 180ms ease;
+      }
+
+      .theme-option-active {
+        background-color: rgba(20, 184, 166, 0.22);
+        box-shadow: inset 0 0 0 1px rgba(20, 184, 166, 0.3);
+      }
+
+      .dark .theme-option-active {
+        background-color: rgba(20, 184, 166, 0.18);
+      }
+
+      .nav-link-active {
+        border-color: rgba(20, 184, 166, 0.5) !important;
+        background-color: rgba(20, 184, 166, 0.16) !important;
+        color: #5eead4 !important;
+      }
+
+      .dark .nav-link-active {
+        color: #0f766e !important;
+        background-color: rgba(20, 184, 166, 0.14) !important;
+      }
+
+      .mobile-nav-active {
+        color: #5eead4 !important;
+        background-color: rgba(20, 184, 166, 0.18) !important;
+        border-color: rgba(20, 184, 166, 0.35) !important;
+      }
+
+      .dark .mobile-nav-active {
+        color: #0f766e !important;
+      }
+
+      details[open] .dropdown-panel {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+        pointer-events: auto;
+      }
+
+      .sr-only {
+        position: absolute;
+        width: 1px;
+        height: 1px;
+        padding: 0;
+        margin: -1px;
+        overflow: hidden;
+        clip: rect(0, 0, 0, 0);
+        border: 0;
+      }
+
+      .skip-link:focus {
+        position: absolute;
+        left: 1rem;
+        top: 1rem;
+        z-index: 60;
+        width: auto;
+        height: auto;
+        clip: auto;
+        margin: 0;
+        padding: 0.5rem 0.75rem;
+        border-radius: 0.5rem;
+        background-color: #14b8a6;
+        color: #0f172a;
+        font-weight: 700;
+      }
+
+      @media (prefers-reduced-motion: reduce) {
+        .section-shell,
+        .stagger,
+        .modal-panel,
+        .modal-bg,
+        .dropdown-panel {
+          animation: none !important;
+          transition: none !important;
+        }
+      }
+
+      @media (max-width: 767px) {
+        .section-shell {
+          padding: 1rem;
+        }
+
+        .data-table {
+          font-size: 0.78rem;
+        }
+
+        .data-table thead {
+          position: absolute;
+          width: 1px;
+          height: 1px;
+          overflow: hidden;
+          clip: rect(0, 0, 0, 0);
+          white-space: nowrap;
+        }
+
+        .data-table tbody,
+        .data-table tr,
+        .data-table td {
+          display: block;
+          width: 100%;
+        }
+
+        .data-table tr {
+          margin: 0.6rem;
+          border: 1px solid rgba(71, 85, 105, 0.55);
+          border-radius: 0.9rem;
+          overflow: hidden;
+          background-color: rgba(15, 23, 42, 0.45);
+        }
+
+        .dark .data-table tr {
+          border-color: rgba(148, 163, 184, 0.55);
+          background-color: rgba(248, 250, 252, 0.8);
+        }
+
+        .data-table th,
+        .data-table td {
+          padding: 0.55rem 0.7rem !important;
+        }
+
+        .data-table td {
+          display: flex;
+          align-items: flex-start;
+          justify-content: space-between;
+          gap: 0.8rem;
+          border-top: 1px solid rgba(71, 85, 105, 0.45);
+          background-color: transparent !important;
+        }
+
+        .data-table tr td:first-child {
+          border-top: 0;
+        }
+
+        .data-table td::before {
+          content: attr(data-label);
+          font-size: 0.65rem;
+          text-transform: uppercase;
+          letter-spacing: 0.04em;
+          color: #94a3b8;
+          font-weight: 700;
+          flex: 0 0 42%;
+          max-width: 42%;
+        }
+
+        .dark .data-table td::before {
+          color: #475569;
+        }
+
+        .data-table td > * {
+          min-width: 0;
+          text-align: right;
+        }
+
+        .data-table td[data-label="Skills"] > div,
+        .data-table td[data-label="Acciones"] > details {
+          margin-left: auto;
+        }
+      }
+
+      @media (min-width: 768px) and (max-width: 1023px) {
+        main {
+          padding-left: 1.1rem !important;
+          padding-right: 1.1rem !important;
+          padding-top: 1.1rem !important;
+        }
+
+        #mobileNav {
+          padding: 0.45rem 0.65rem;
+        }
+
+        #mobileNav .nav-link {
+          font-size: 0.73rem !important;
+          padding: 0.55rem 0.4rem !important;
+        }
+
+        .section-shell {
+          padding: 1rem;
+          border-radius: 1.1rem;
+        }
+
+        .section-shell header h1,
+        .section-shell header h2 {
+          font-size: 1.3rem;
+          line-height: 1.25;
+        }
+
+        .data-table {
+          font-size: 0.76rem;
+        }
+
+        .data-table th,
+        .data-table td {
+          padding: 0.5rem 0.45rem !important;
+          line-height: 1.35;
+        }
+
+        .data-table th span.inline-flex {
+          height: 1.2rem;
+          width: 1.2rem;
+          font-size: 0.65rem;
+        }
+
+        .data-table td {
+          vertical-align: top;
+        }
+
+        .data-table td[data-label="Descripcion"],
+        .data-table td[data-label="Skills"],
+        .data-table td[data-label="Fechas"] {
+          font-size: 0.72rem;
+        }
+      }
+    </style>
+  </head>
+  <body class="text-slate-100 transition-colors duration-300 dark:text-slate-800">
+    <a href="#dashboard" class="sr-only skip-link focusable">
+      Saltar al contenido principal
+    </a>
+    <div class="min-h-screen lg:flex">
+      <aside class="hidden lg:block lg:fixed lg:inset-y-0 lg:left-0 lg:w-72 p-4 lg:p-6">
+        <div
+          id="sidebarPanel"
+          class="h-full rounded-3xl border border-slate-700/60 bg-slate-900/75 p-5 shadow-card backdrop-blur dark:border-slate-200 dark:bg-white/90"
+        >
+          <header class="mb-8">
+            <p class="brand-font text-2xl tracking-tight text-white dark:text-slate-900">Agenthub</p>
+            <p class="text-sm text-slate-300 dark:text-slate-600">Panel de administracion interna</p>
+          </header>
+
+          <div class="mb-6 flex items-center">
+            <button
+              id="themeToggle"
+              type="button"
+              aria-label="Cambiar entre modo oscuro y claro"
+              class="focusable group inline-flex items-center gap-2 rounded-full border border-aqua/35 bg-slate-800/70 px-2 py-1 text-aqua transition hover:bg-aqua/15 dark:bg-slate-100"
+            >
+              <span id="themeSun" aria-hidden="true" class="theme-option text-xs leading-none">☀</span>
+              <span class="relative inline-flex h-5 w-9 items-center rounded-full bg-aqua/30 transition-colors">
+                <span id="themeKnob" class="h-4 w-4 translate-x-0.5 rounded-full bg-aqua transition-transform duration-200"></span>
+              </span>
+              <span id="themeMoon" aria-hidden="true" class="theme-option text-xs leading-none">☾</span>
+            </button>
+          </div>
+
+          <nav id="sideNav" class="space-y-2"></nav>
+        </div>
+      </aside>
+
+      <main class="w-full p-4 pb-24 md:p-6 md:pb-24 lg:ml-72 lg:w-[calc(100%-18rem)] lg:p-8 lg:pb-8">
+
+        <section id="dashboard" class="section-shell rounded-3xl border border-slate-700/60 bg-slate-900/70 p-6 shadow-card dark:border-slate-200 dark:bg-white/95">
+          <header class="mb-5">
+            <h1 class="brand-font text-2xl text-white dark:text-slate-900">Dashboard</h1>
+            <p class="text-sm text-slate-300 dark:text-slate-600">Resumen operativo del mes actual.</p>
+          </header>
+          <div id="metricsGrid" class="grid gap-4 md:grid-cols-2"></div>
+        </section>
+
+        <section id="usuarios" class="section-shell mt-6 rounded-3xl border border-slate-700/60 bg-slate-900/70 p-6 shadow-card dark:border-slate-200 dark:bg-white/95">
+          <header class="mb-5">
+            <h2 class="brand-font text-2xl text-white dark:text-slate-900">Gestion de usuarios</h2>
+            <p class="text-sm text-slate-300 dark:text-slate-600">Usuarios registrados, planes y estado de suscripcion.</p>
+          </header>
+          <div class="overflow-x-hidden rounded-2xl border border-slate-700/60 dark:border-slate-300">
+            <table class="data-table min-w-full text-sm" id="usersTable"></table>
+          </div>
+        </section>
+
+        <section id="agentes" class="section-shell mt-6 rounded-3xl border border-slate-700/60 bg-slate-900/70 p-6 shadow-card dark:border-slate-200 dark:bg-white/95">
+          <header class="mb-5">
+            <h2 class="brand-font text-2xl text-white dark:text-slate-900">Gestion de agentes</h2>
+            <p class="text-sm text-slate-300 dark:text-slate-600">Estado de ejecucion y skills por agente.</p>
+          </header>
+          <div class="overflow-x-hidden rounded-2xl border border-slate-700/60 dark:border-slate-300">
+            <table class="data-table min-w-full text-sm" id="agentsTable"></table>
+          </div>
+        </section>
+
+        <section id="skills" class="section-shell mt-6 rounded-3xl border border-slate-700/60 skills-panel p-6 shadow-card dark:border-slate-300">
+          <header class="mb-5">
+            <h2 class="brand-font text-2xl text-white dark:text-slate-900">Skills</h2>
+            <p class="text-sm text-slate-300 dark:text-slate-600">Catalogo de capacidades habilitables en los agentes.</p>
+          </header>
+          <div id="skillsGrid" class="grid gap-4 sm:grid-cols-2 xl:grid-cols-4"></div>
+          <article id="skillsInfoCard" class="mt-5 rounded-2xl border border-slate-500/50 bg-slate-900/40 p-4 dark:border-slate-400/70 dark:bg-slate-100/90">
+            <h3 class="brand-font text-lg text-white dark:text-slate-900">Que es una skill en Agenthub</h3>
+            <p class="mt-2 text-sm text-slate-200 dark:text-slate-700">
+              Una skill es un modulo reutilizable que define una capacidad concreta para un agente: desde clasificar tickets hasta
+              generar reportes o detectar fraude. Las skills pueden combinarse para adaptar cada agente al flujo real del cliente.
+            </p>
+          </article>
+        </section>
+
+        <section id="contrataciones" class="section-shell mt-6 rounded-3xl border border-slate-700/60 bg-slate-900/70 p-6 shadow-card dark:border-slate-200 dark:bg-white/95">
+          <header class="mb-5">
+            <h2 class="brand-font text-2xl text-white dark:text-slate-900">Contrataciones de agentes</h2>
+            <p class="text-sm text-slate-300 dark:text-slate-600">Contratos activos y finalizados con desglose economico.</p>
+          </header>
+          <div class="overflow-x-hidden rounded-2xl border border-slate-700/60 dark:border-slate-300">
+            <table class="data-table min-w-full text-sm" id="contractsTable"></table>
+          </div>
+        </section>
+
+        <section id="errores" class="section-shell mt-6 rounded-3xl border border-slate-700/60 bg-slate-900/70 p-6 shadow-card dark:border-slate-200 dark:bg-white/95">
+          <header class="mb-5">
+            <h2 class="brand-font text-2xl text-white dark:text-slate-900">Log de errores</h2>
+            <p class="text-sm text-slate-300 dark:text-slate-600">Ejecuciones fallidas, gravedad y estado de resolucion.</p>
+          </header>
+          <div class="overflow-x-hidden rounded-2xl border border-slate-700/60 dark:border-slate-300">
+            <table class="data-table min-w-full text-sm" id="errorsTable"></table>
+          </div>
+        </section>
+      </main>
+    </div>
+
+    <nav
+      id="mobileNav"
+      aria-label="Navegacion de secciones"
+      class="fixed inset-x-0 bottom-0 z-40 border-t border-slate-700/70 bg-slate-950/90 p-2 backdrop-blur lg:hidden dark:border-slate-300 dark:bg-white/95"
+    ></nav>
+
+    <div class="hidden md:flex lg:hidden fixed top-3 right-3 z-40">
+      <button
+        id="themeToggleTablet"
+        type="button"
+        aria-label="Cambiar entre modo oscuro y claro"
+        class="focusable group inline-flex items-center gap-2 rounded-full border border-aqua/35 bg-slate-800/80 px-2 py-1 text-aqua shadow-card backdrop-blur transition hover:bg-aqua/15 dark:bg-white/90"
+      >
+        <span id="themeSunTablet" aria-hidden="true" class="theme-option text-xs leading-none">☀</span>
+        <span class="relative inline-flex h-5 w-9 items-center rounded-full bg-aqua/30 transition-colors">
+          <span id="themeKnobTablet" class="h-4 w-4 translate-x-0.5 rounded-full bg-aqua transition-transform duration-200"></span>
+        </span>
+        <span id="themeMoonTablet" aria-hidden="true" class="theme-option text-xs leading-none">☾</span>
+      </button>
+    </div>
+
+    <div id="modalRoot" class="fixed inset-0 z-50 hidden items-center justify-center p-4" aria-hidden="true">
+      <div id="modalBackdrop" class="modal-backdrop modal-bg absolute inset-0"></div>
+      <div
+        id="modalPanel"
+        role="dialog"
+        aria-modal="true"
+        aria-labelledby="modalTitle"
+        tabindex="-1"
+        class="modal-panel relative z-10 w-full max-w-2xl rounded-3xl border border-slate-600 bg-slate-900 p-6 shadow-card dark:border-slate-300 dark:bg-white"
+      >
+        <div class="mb-4 flex items-start justify-between gap-4">
+          <h3 id="modalTitle" class="brand-font text-xl text-white dark:text-slate-900"></h3>
+          <button
+            id="modalClose"
+            class="rounded-lg border border-slate-500 px-3 py-1 text-sm font-semibold text-slate-200 hover:bg-slate-700 dark:border-slate-400 dark:text-slate-700 dark:hover:bg-slate-200"
+          >
+            Cerrar
+          </button>
+        </div>
+        <div id="modalContent" class="max-h-[68vh] overflow-y-auto pr-2 text-sm text-slate-200 dark:text-slate-700"></div>
+      </div>
+    </div>
+
+    <script>
+      const state = {
+        users: [
+          {
+            id: 1,
+            name: "Alicia Rojas",
+            email: "alicia@retailnova.com",
+            plan: "Enterprise",
+            status: "Activa",
+            company: "Retail Nova",
+            country: "Chile",
+            joinedAt: "2026-01-12",
+            seats: 36
+          },
+          {
+            id: 2,
+            name: "Bernardo Leon",
+            email: "bleon@logi360.io",
+            plan: "Growth",
+            status: "Activa",
+            company: "Logi360",
+            country: "Peru",
+            joinedAt: "2025-11-08",
+            seats: 14
+          },
+          {
+            id: 3,
+            name: "Carla Diaz",
+            email: "c.diaz@medistack.com",
+            plan: "Starter",
+            status: "Trial",
+            company: "MediStack",
+            country: "Mexico",
+            joinedAt: "2026-06-02",
+            seats: 4
+          },
+          {
+            id: 4,
+            name: "Diego Mena",
+            email: "diego@finleaf.ai",
+            plan: "Enterprise",
+            status: "Suspendida",
+            company: "FinLeaf",
+            country: "Colombia",
+            joinedAt: "2025-09-20",
+            seats: 52
+          },
+          {
+            id: 5,
+            name: "Elena Pardo",
+            email: "elena@citymesh.io",
+            plan: "Growth",
+            status: "Activa",
+            company: "CityMesh",
+            country: "Argentina",
+            joinedAt: "2026-04-18",
+            seats: 11
+          },
+          {
+            id: 6,
+            name: "Fernando Ruiz",
+            email: "fernando@insurapulse.com",
+            plan: "Starter",
+            status: "Trial",
+            company: "InsuraPulse",
+            country: "Uruguay",
+            joinedAt: "2026-06-09",
+            seats: 6
+          }
+        ],
+        agents: [
+          {
+            id: 101,
+            name: "Support Hawk",
+            owner: "Retail Nova",
+            status: "activo",
+            skills: ["Ticket Triage", "NLP Clasificacion", "Escalado Inteligente"],
+            systemPrompt: "Eres Support Hawk. Prioriza tickets por impacto economico y urgencia, propon acciones breves y trazables."
+          },
+          {
+            id: 102,
+            name: "Fraud Sentinel",
+            owner: "FinLeaf",
+            status: "fallando",
+            skills: ["Fraude AML", "Analisis de patrones", "Alertas en tiempo real"],
+            systemPrompt: "Eres Fraud Sentinel. Detecta patrones anomales en transferencias y calcula nivel de riesgo de 0 a 100."
+          },
+          {
+            id: 103,
+            name: "Ops Courier",
+            owner: "Logi360",
+            status: "inactivo",
+            skills: ["Optimizacion de rutas", "Forecast de demanda"],
+            systemPrompt: "Eres Ops Courier. Responde con planes semanales, supuestos de capacidad y tiempos de entrega esperados."
+          },
+          {
+            id: 104,
+            name: "Care Whisper",
+            owner: "MediStack",
+            status: "activo",
+            skills: ["Resumen clinico", "Extraccion de entidades", "Control de calidad"],
+            systemPrompt: "Eres Care Whisper. Resume reportes clinicos con lenguaje claro para personal medico no tecnico."
+          }
+        ],
+        skills: [
+          { id: 1, name: "Ticket Triage", description: "Clasifica incidencias por prioridad.", enabled: 32 },
+          { id: 2, name: "NLP Clasificacion", description: "Extrae intencion y sentimiento.", enabled: 27 },
+          { id: 3, name: "Escalado Inteligente", description: "Escala segun SLA y contexto.", enabled: 19 },
+          { id: 4, name: "Fraude AML", description: "Detecta patrones sospechosos.", enabled: 12 },
+          { id: 5, name: "Forecast de demanda", description: "Predice volumen de solicitudes.", enabled: 16 },
+          { id: 6, name: "Resumen clinico", description: "Resume notas medicas extensas.", enabled: 9 },
+          { id: 7, name: "Extraccion de entidades", description: "Captura entidades clave.", enabled: 22 },
+          { id: 8, name: "Control de calidad", description: "Verifica consistencia de salida.", enabled: 14 }
+        ],
+        contracts: [
+          {
+            id: 9001,
+            client: "Retail Nova",
+            agent: "Support Hawk",
+            skills: [
+              { name: "Ticket Triage", price: 850 },
+              { name: "NLP Clasificacion", price: 700 },
+              { name: "Escalado Inteligente", price: 680 }
+            ],
+            startDate: "2026-01-01",
+            endDate: "2026-12-31",
+            totalPaid: 26700,
+            status: "Activo"
+          },
+          {
+            id: 9002,
+            client: "Logi360",
+            agent: "Ops Courier",
+            skills: [
+              { name: "Forecast de demanda", price: 920 },
+              { name: "Optimizacion de rutas", price: 1040 }
+            ],
+            startDate: "2025-05-01",
+            endDate: "2026-05-01",
+            totalPaid: 23520,
+            status: "Finalizado"
+          },
+          {
+            id: 9003,
+            client: "MediStack",
+            agent: "Care Whisper",
+            skills: [
+              { name: "Resumen clinico", price: 780 },
+              { name: "Extraccion de entidades", price: 740 },
+              { name: "Control de calidad", price: 610 }
+            ],
+            startDate: "2026-03-15",
+            endDate: "2026-09-15",
+            totalPaid: 12780,
+            status: "Activo"
+          },
+          {
+            id: 9004,
+            client: "FinLeaf",
+            agent: "Fraud Sentinel",
+            skills: [
+              { name: "Fraude AML", price: 1260 },
+              { name: "Analisis de patrones", price: 980 },
+              { name: "Alertas en tiempo real", price: 920 }
+            ],
+            startDate: "2026-02-01",
+            endDate: "2026-11-30",
+            totalPaid: 28440,
+            status: "Activo"
+          }
+        ],
+        errors: [
+          {
+            id: "ERR-2101",
+            timestamp: "2026-06-19 09:31",
+            agent: "Fraud Sentinel",
+            type: "Timeout",
+            severity: "Alta",
+            shortDesc: "Consulta SQL excedio 30s en validacion AML.",
+            stack: "Traceback: TimeoutError at aml_pipeline.py:188 -> db.fetch_risk_profiles()",
+            resolved: false
+          },
+          {
+            id: "ERR-2102",
+            timestamp: "2026-06-19 14:07",
+            agent: "Support Hawk",
+            type: "Schema",
+            severity: "Media",
+            shortDesc: "Fallo de parseo en payload de CRM externo.",
+            stack: "ValueError: missing field customer_tier at integrations/crm_adapter.js:74",
+            resolved: true
+          },
+          {
+            id: "ERR-2104",
+            timestamp: "2026-06-20 11:46",
+            agent: "Ops Courier",
+            type: "Timeout",
+            severity: "Media",
+            shortDesc: "Demora al generar plan semanal por sobrecarga de rutas.",
+            stack: "TimeoutError at planner/route_optimizer.py:203 -> optimize_week_plan()",
+            resolved: false
+          },
+          {
+            id: "ERR-2103",
+            timestamp: "2026-06-20 08:12",
+            agent: "Care Whisper",
+            type: "Hallucination",
+            severity: "Baja",
+            shortDesc: "Resumen incluyo termino no presente en nota clinica.",
+            stack: "QualityCheckWarning at qa/reviewer.py:56 -> unmatched clinical entity",
+            resolved: false
+          },
+          {
+            id: "ERR-2105",
+            timestamp: "2026-06-20 16:28",
+            agent: "Fraud Sentinel",
+            type: "Schema",
+            severity: "Alta",
+            shortDesc: "Inconsistencia en estructura de respuesta del proveedor KYC.",
+            stack: "SchemaValidationError at integrations/kyc_client.ts:119 -> expected field risk_score:number",
+            resolved: false
+          }
+        ]
+      };
+
+      const navItems = [
+        { id: "dashboard", label: "Dashboard", mobileLabel: "Inicio" },
+        { id: "usuarios", label: "Gestion de usuarios", mobileLabel: "Usuarios" },
+        { id: "agentes", label: "Gestion de agentes", mobileLabel: "Agentes" },
+        { id: "skills", label: "Skills", mobileLabel: "Skills" },
+        { id: "contrataciones", label: "Contrataciones", mobileLabel: "Contratos" },
+        { id: "errores", label: "Log de errores", mobileLabel: "Errores" }
+      ];
+
+      const metrics = [
+        {
+          title: "Ingresos del mes",
+          value: "$118,400",
+          icon: "M3 13h2l2 7h8l2-7h2M5 10h14M7 10V6a5 5 0 0110 0v4"
+        },
+        {
+          title: "Perdida por descuentos",
+          value: "$12,930",
+          icon: "M4 12h16M12 4v16M7 7l10 10"
+        },
+        {
+          title: "Agentes activos",
+          value: "286",
+          icon: "M4 18v-1a4 4 0 014-4h8a4 4 0 014 4v1M12 12a4 4 0 100-8 4 4 0 000 8z"
+        },
+        {
+          title: "Agentes fallando",
+          value: "11",
+          icon: "M12 8v5m0 4h.01M5.07 19h13.86a1 1 0 00.87-1.5L12.93 4a1 1 0 00-1.73 0L4.2 17.5a1 1 0 00.87 1.5z"
+        }
+      ];
+
+      const sideNav = document.getElementById("sideNav");
+      const mobileNav = document.getElementById("mobileNav");
+      const modalRoot = document.getElementById("modalRoot");
+      const modalBackdrop = document.getElementById("modalBackdrop");
+      const modalClose = document.getElementById("modalClose");
+      const modalTitle = document.getElementById("modalTitle");
+      const modalContent = document.getElementById("modalContent");
+      const modalPanel = document.getElementById("modalPanel");
+      const themeToggle = document.getElementById("themeToggle");
+      const themeKnob = document.getElementById("themeKnob");
+      const themeSun = document.getElementById("themeSun");
+      const themeMoon = document.getElementById("themeMoon");
+      const themeToggleTablet = document.getElementById("themeToggleTablet");
+      const themeKnobTablet = document.getElementById("themeKnobTablet");
+      const themeSunTablet = document.getElementById("themeSunTablet");
+      const themeMoonTablet = document.getElementById("themeMoonTablet");
+      const focusableSelector = 'a[href], button:not([disabled]), textarea, input, select, summary, [tabindex]:not([tabindex="-1"])';
+      let previousFocus = null;
+
+      function money(value) {
+        return new Intl.NumberFormat("es-ES", { style: "currency", currency: "USD", maximumFractionDigits: 0 }).format(value);
+      }
+
+      function navButton(item, mobile = false) {
+        const button = document.createElement("button");
+        button.type = "button";
+        button.textContent = mobile ? item.mobileLabel : item.label;
+        button.classList.add("focusable");
+        button.dataset.section = item.id;
+        button.dataset.navType = mobile ? "mobile" : "side";
+        button.className = mobile
+          ? "nav-link flex-1 rounded-xl border border-transparent px-2 py-2 text-[11px] font-semibold text-slate-300 transition dark:text-slate-600"
+          : "nav-link w-full rounded-xl border border-transparent px-4 py-2 text-left text-sm font-semibold text-slate-200 hover:border-aqua/35 hover:bg-aqua/10 dark:text-slate-700 dark:hover:border-aqua/35 dark:hover:bg-aqua/15";
+        button.addEventListener("click", () => {
+          setActiveNav(item.id);
+          document.getElementById(item.id).scrollIntoView({ behavior: "smooth", block: "start" });
+        });
+        return button;
+      }
+
+      function setActiveNav(sectionId) {
+        document.querySelectorAll(".nav-link").forEach((button) => {
+          const isActive = button.dataset.section === sectionId;
+          if (button.dataset.navType === "side") {
+            button.classList.toggle("nav-link-active", isActive);
+          }
+          if (button.dataset.navType === "mobile") {
+            button.classList.toggle("mobile-nav-active", isActive);
+          }
+          if (isActive) {
+            button.setAttribute("aria-current", "page");
+          } else {
+            button.removeAttribute("aria-current");
+          }
+        });
+      }
+
+      function initActiveSectionObserver() {
+        const sectionIds = navItems.map((item) => item.id);
+        const sections = sectionIds.map((id) => document.getElementById(id)).filter(Boolean);
+        if (!sections.length) return;
+
+        setActiveNav(sectionIds[0]);
+        let ticking = false;
+
+        const updateActiveSection = () => {
+          const viewportMark = window.scrollY + window.innerHeight * 0.33;
+          let activeId = sectionIds[0];
+
+          sections.forEach((section) => {
+            if (section.offsetTop <= viewportMark) {
+              activeId = section.id;
+            }
+          });
+
+          const scrolledToBottom = window.innerHeight + window.scrollY >= document.body.scrollHeight - 4;
+          if (scrolledToBottom) {
+            activeId = sectionIds[sectionIds.length - 1];
+          }
+
+          setActiveNav(activeId);
+          ticking = false;
+        };
+
+        const onScrollOrResize = () => {
+          if (ticking) return;
+          ticking = true;
+          window.requestAnimationFrame(updateActiveSection);
+        };
+
+        window.addEventListener("scroll", onScrollOrResize, { passive: true });
+        window.addEventListener("resize", onScrollOrResize);
+        updateActiveSection();
+      }
+
+      function renderNavigation() {
+        sideNav.innerHTML = "";
+        mobileNav.innerHTML = "";
+        mobileNav.classList.add("grid", "grid-cols-6", "gap-1");
+        navItems.forEach((item) => {
+          sideNav.appendChild(navButton(item));
+          mobileNav.appendChild(navButton(item, true));
+        });
+      }
+
+      function renderMetrics() {
+        const grid = document.getElementById("metricsGrid");
+        grid.innerHTML = "";
+
+        metrics.forEach((metric, index) => {
+          const article = document.createElement("article");
+          article.className =
+            "metric-card stagger rounded-2xl border border-slate-700/70 bg-slate-800/70 p-4 shadow-card dark:border-slate-300 dark:bg-slate-100";
+          article.style.animationDelay = `${index * 80}ms`;
+          article.innerHTML = `
+            <div class="mb-2 flex items-center justify-between">
+              <p class="text-sm text-slate-300 dark:text-slate-600">${metric.title}</p>
+              <span class="rounded-lg bg-aqua/20 p-2 text-aqua">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8">
+                  <path stroke-linecap="round" stroke-linejoin="round" d="${metric.icon}" />
+                </svg>
+              </span>
+            </div>
+            <p class="brand-font text-3xl text-white dark:text-slate-900">${metric.value}</p>
+          `;
+          grid.appendChild(article);
+        });
+
+        const chart = document.createElement("article");
+        chart.className =
+          "metric-card stagger md:col-span-2 rounded-2xl border border-slate-700/70 bg-slate-800/70 p-4 shadow-card dark:border-slate-300 dark:bg-slate-100";
+        chart.style.animationDelay = "340ms";
+        chart.innerHTML = `
+          <p class="mb-3 text-sm text-slate-300 dark:text-slate-600">Actividad semanal (marcador de posicion)</p>
+          <div class="grid h-36 grid-cols-7 items-end gap-2">
+            ${[38, 62, 44, 78, 57, 69, 84]
+              .map(
+                (v, idx) => `
+                  <div class="activity-slot h-full rounded-lg bg-slate-700/55 p-1 dark:bg-slate-300">
+                    <div style="height:${v}%" class="rounded-md bg-gradient-to-t from-aqua to-emerald-400"></div>
+                    <p class="activity-slot-label mt-2 text-center text-[10px] text-slate-300 dark:text-slate-700">D${idx + 1}</p>
+                  </div>
+                `
+              )
+              .join("")}
+          </div>
+        `;
+        grid.appendChild(chart);
+      }
+
+      function statusBadge(status) {
+        const map = {
+          Activa: "bg-emerald-500/20 text-emerald-300 dark:bg-emerald-100 dark:text-emerald-700",
+          Trial: "bg-amber-500/20 text-amber-300 dark:bg-amber-100 dark:text-amber-700",
+          Suspendida: "bg-rose-500/20 text-rose-300 dark:bg-rose-100 dark:text-rose-700",
+          activo: "bg-emerald-500/20 text-emerald-300 dark:bg-emerald-100 dark:text-emerald-700",
+          inactivo: "bg-slate-500/25 text-slate-300 dark:bg-slate-200 dark:text-slate-700",
+          fallando: "bg-rose-500/20 text-rose-300 dark:bg-rose-100 dark:text-rose-700",
+          Activo: "bg-emerald-500/20 text-emerald-300 dark:bg-emerald-100 dark:text-emerald-700",
+          Finalizado: "bg-slate-500/25 text-slate-300 dark:bg-slate-200 dark:text-slate-700"
+        };
+        return `<span class="rounded-full px-2 py-1 text-xs font-semibold ${map[status] || map.inactivo}">${status}</span>`;
+      }
+
+      function icon(title) {
+        return `<span class="inline-flex h-6 w-6 items-center justify-center rounded-md bg-slate-700/65 text-aqua dark:bg-slate-200">${title}</span>`;
+      }
+
+      function buildActions(actions) {
+        const menuId = `menu-${Math.random().toString(36).slice(2, 9)}`;
+        return `
+          <details class="group relative inline-block text-left dropdown-menu">
+            <summary aria-label="Abrir menu de acciones" aria-haspopup="menu" aria-expanded="false" aria-controls="${menuId}" class="focusable flex h-8 w-8 cursor-pointer list-none items-center justify-center rounded-lg border border-slate-500 text-slate-200 hover:bg-slate-700 dark:border-slate-400 dark:text-slate-700 dark:hover:bg-slate-200">
+              <span class="sr-only">Abrir menu de acciones</span>
+              <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+                <circle cx="12" cy="5" r="1.8"></circle>
+                <circle cx="12" cy="12" r="1.8"></circle>
+                <circle cx="12" cy="19" r="1.8"></circle>
+              </svg>
+            </summary>
+            <div id="${menuId}" role="menu" class="dropdown-panel absolute right-0 z-20 mt-1 w-44 rounded-xl border border-slate-600 bg-slate-900 p-1 shadow-lg dark:border-slate-300 dark:bg-white">
+              ${actions
+                .map(
+                  (action) =>
+                    `<button type="button" role="menuitem" data-action="${action.key}" data-id="${action.id}" class="action-item focusable flex w-full items-center justify-between rounded-lg px-3 py-2 text-left text-xs text-slate-200 hover:bg-slate-700 dark:text-slate-700 dark:hover:bg-slate-100">${action.label}<span>${action.icon}</span></button>`
+                )
+                .join("")}
+            </div>
+          </details>
+        `;
+      }
+
+      function renderUsers() {
+        const table = document.getElementById("usersTable");
+        table.innerHTML = `
+          <thead>
+            <tr class="text-left text-xs uppercase tracking-wider text-slate-300 dark:text-slate-700">
+              <th class="px-4 py-3">${icon("U")} Nombre</th>
+              <th class="px-4 py-3">${icon("@") } Email</th>
+              <th class="px-4 py-3">${icon("P")} Plan</th>
+              <th class="px-4 py-3">${icon("S")} Estado</th>
+              <th class="px-4 py-3">${icon("A")} Acciones</th>
+            </tr>
+          </thead>
+          <tbody>
+            ${state.users
+              .map(
+                (u) => `
+                  <tr class="border-t border-slate-700/50 dark:border-slate-300/60">
+                    <td data-label="Nombre" class="px-4 py-3 font-medium">${u.name}</td>
+                    <td data-label="Email" class="px-4 py-3">${u.email}</td>
+                    <td data-label="Plan" class="px-4 py-3">${u.plan}</td>
+                    <td data-label="Estado" class="px-4 py-3">${statusBadge(u.status)}</td>
+                    <td data-label="Acciones" class="px-4 py-3">${buildActions([
+                      { key: "user-detail", id: u.id, label: "Ver detalle", icon: "i" },
+                      { key: "user-delete", id: u.id, label: "Eliminar", icon: "x" }
+                    ])}</td>
+                  </tr>
+                `
+              )
+              .join("")}
+          </tbody>
+        `;
+      }
+
+      function renderAgents() {
+        const table = document.getElementById("agentsTable");
+        table.innerHTML = `
+          <thead>
+            <tr class="text-left text-xs uppercase tracking-wider text-slate-300 dark:text-slate-700">
+              <th class="px-4 py-3">${icon("N")} Nombre</th>
+              <th class="px-4 py-3">${icon("O")} Propietario</th>
+              <th class="px-4 py-3">${icon("E")} Estado</th>
+              <th class="px-4 py-3">${icon("K")} Skills</th>
+              <th class="px-4 py-3">${icon("A")} Acciones</th>
+            </tr>
+          </thead>
+          <tbody>
+            ${state.agents
+              .map(
+                (agent) => `
+                  <tr class="border-t border-slate-700/50 dark:border-slate-300/60">
+                    <td data-label="Nombre" class="px-4 py-3 font-medium">${agent.name}</td>
+                    <td data-label="Propietario" class="px-4 py-3">${agent.owner}</td>
+                    <td data-label="Estado" class="px-4 py-3">${statusBadge(agent.status)}</td>
+                    <td data-label="Skills" class="px-4 py-3">
+                      <button type="button" data-target="skills-${agent.id}" aria-controls="skills-${agent.id}" aria-expanded="false" class="toggle-skills focusable rounded-lg border border-slate-500 px-2 py-1 text-xs">Ver skills</button>
+                      <div id="skills-${agent.id}" class="mt-2 max-h-0 overflow-hidden transition-all duration-300">
+                        <ul class="space-y-1 text-xs text-slate-200 dark:text-slate-700">
+                          ${agent.skills.map((skill) => `<li class="rounded-md bg-slate-700/60 px-2 py-1 dark:bg-slate-200">${skill}</li>`).join("")}
+                        </ul>
+                      </div>
+                    </td>
+                    <td data-label="Acciones" class="px-4 py-3">${buildActions([
+                      { key: "agent-config", id: agent.id, label: "Configurar", icon: "i" },
+                      { key: "agent-delete", id: agent.id, label: "Eliminar", icon: "x" }
+                    ])}</td>
+                  </tr>
+                `
+              )
+              .join("")}
+          </tbody>
+        `;
+      }
+
+      function renderSkills() {
+        const grid = document.getElementById("skillsGrid");
+        grid.innerHTML = state.skills
+          .map(
+            (skill, i) => `
+              <article class="skill-card stagger rounded-2xl border border-slate-600/70 bg-slate-900/55 p-4 shadow-card dark:border-slate-300 dark:bg-white" style="animation-delay:${i * 70}ms;">
+                <div class="mb-2 flex items-center justify-between gap-2">
+                  <h3 class="brand-font text-lg text-white dark:text-slate-900">${skill.name}</h3>
+                  <span class="rounded-full bg-aqua/20 px-2 py-1 text-xs text-aqua">${skill.enabled} agentes</span>
+                </div>
+                <p class="text-sm text-slate-300 dark:text-slate-700">${skill.description}</p>
+                <div class="mt-3">${buildActions([
+                  { key: "skill-detail", id: skill.id, label: "Ver detalle", icon: "i" },
+                  { key: "skill-delete", id: skill.id, label: "Eliminar", icon: "x" }
+                ])}</div>
+              </article>
+            `
+          )
+          .join("");
+      }
+
+      function renderContracts() {
+        const table = document.getElementById("contractsTable");
+        table.innerHTML = `
+          <thead>
+            <tr class="text-left text-xs uppercase tracking-wider text-slate-300 dark:text-slate-700">
+              <th class="px-4 py-3">${icon("C")} Cliente</th>
+              <th class="px-4 py-3">${icon("A")} Agente</th>
+              <th class="px-4 py-3">${icon("S")} Skills</th>
+              <th class="px-4 py-3">${icon("F")} Fechas</th>
+              <th class="px-4 py-3">${icon("$")} Importe</th>
+              <th class="px-4 py-3">${icon("D")} Acciones</th>
+            </tr>
+          </thead>
+          <tbody>
+            ${state.contracts
+              .map(
+                (c) => `
+                  <tr class="border-t border-slate-700/50 dark:border-slate-300/60">
+                    <td data-label="Cliente" class="px-4 py-3 font-medium">${c.client}</td>
+                    <td data-label="Agente" class="px-4 py-3">${c.agent}</td>
+                    <td data-label="Skills" class="px-4 py-3">${c.skills.map((s) => s.name).join(", ")}</td>
+                    <td data-label="Fechas" class="px-4 py-3">${c.startDate} a ${c.endDate}</td>
+                    <td data-label="Importe" class="px-4 py-3">${money(c.totalPaid)}</td>
+                    <td data-label="Acciones" class="px-4 py-3">${buildActions([{ key: "contract-detail", id: c.id, label: "Ver detalle", icon: "i" }])}</td>
+                  </tr>
+                `
+              )
+              .join("")}
+          </tbody>
+        `;
+      }
+
+      function errorSeverityBadge(level) {
+        const styles = {
+          Alta: "bg-rose-500/20 text-rose-300 dark:bg-rose-100 dark:text-rose-700",
+          Media: "bg-amber-500/20 text-amber-300 dark:bg-amber-100 dark:text-amber-700",
+          Baja: "bg-sky-500/20 text-sky-300 dark:bg-sky-100 dark:text-sky-700"
+        };
+        return `<span class="rounded-full px-2 py-1 text-xs font-semibold ${styles[level]}">${level}</span>`;
+      }
+
+      function errorTypeBadge(type) {
+        const styles = {
+          Timeout: "bg-fuchsia-500/20 text-fuchsia-300 dark:bg-fuchsia-100 dark:text-fuchsia-700",
+          Schema: "bg-indigo-500/20 text-indigo-300 dark:bg-indigo-100 dark:text-indigo-700",
+          Hallucination: "bg-teal-500/20 text-teal-300 dark:bg-teal-100 dark:text-teal-700"
+        };
+        return `<span class="rounded-full px-2 py-1 text-xs font-semibold ${styles[type] || styles.Schema}">${type}</span>`;
+      }
+
+      function renderErrors() {
+        const table = document.getElementById("errorsTable");
+        table.innerHTML = `
+          <thead>
+            <tr class="text-left text-xs uppercase tracking-wider text-slate-300 dark:text-slate-700">
+              <th class="px-4 py-3">${icon("T")} Timestamp</th>
+              <th class="px-4 py-3">${icon("A")} Agente</th>
+              <th class="px-4 py-3">${icon("G")} Gravedad</th>
+              <th class="px-4 py-3">${icon("Y")} Tipo</th>
+              <th class="px-4 py-3">${icon("D")} Descripcion</th>
+              <th class="px-4 py-3">${icon("R")} Resuelto</th>
+              <th class="px-4 py-3">${icon("A")} Acciones</th>
+            </tr>
+          </thead>
+          <tbody>
+            ${state.errors
+              .map(
+                (e) => `
+                  <tr class="border-t border-slate-700/50 dark:border-slate-300/60">
+                    <td data-label="Timestamp" class="px-4 py-3">${e.timestamp}</td>
+                    <td data-label="Agente" class="px-4 py-3 font-medium">${e.agent}</td>
+                    <td data-label="Gravedad" class="px-4 py-3">${errorSeverityBadge(e.severity)}</td>
+                    <td data-label="Tipo" class="px-4 py-3">${errorTypeBadge(e.type)}</td>
+                    <td data-label="Descripcion" class="px-4 py-3">${e.shortDesc}</td>
+                    <td data-label="Resuelto" class="px-4 py-3">${e.resolved ? "[x] Resuelto" : "[ ] Pendiente"}</td>
+                    <td data-label="Acciones" class="px-4 py-3">${buildActions([
+                      { key: "error-detail", id: e.id, label: "Ver detalle", icon: "i" },
+                      { key: "error-resolve", id: e.id, label: "Marcar como resuelto", icon: "v" }
+                    ])}</td>
+                  </tr>
+                `
+              )
+              .join("")}
+          </tbody>
+        `;
+      }
+
+      function openModal(title, html) {
+        previousFocus = document.activeElement;
+        modalTitle.textContent = title;
+        modalContent.innerHTML = html;
+        modalRoot.classList.remove("hidden");
+        modalRoot.classList.add("flex");
+        modalRoot.setAttribute("aria-hidden", "false");
+        document.body.classList.add("overflow-hidden");
+
+        requestAnimationFrame(() => {
+          modalBackdrop.classList.add("modal-bg-open");
+          modalPanel.classList.add("modal-panel-open");
+          const firstFocusable = modalPanel.querySelector(focusableSelector);
+          (firstFocusable || modalPanel).focus();
+        });
+      }
+
+      function closeModal() {
+        modalBackdrop.classList.remove("modal-bg-open");
+        modalPanel.classList.remove("modal-panel-open");
+        window.setTimeout(() => {
+          modalRoot.classList.add("hidden");
+          modalRoot.classList.remove("flex");
+          modalRoot.setAttribute("aria-hidden", "true");
+          document.body.classList.remove("overflow-hidden");
+          if (previousFocus && typeof previousFocus.focus === "function") previousFocus.focus();
+        }, 180);
+      }
+
+      function closeAllDropdowns(exceptDetails = null) {
+        document.querySelectorAll(".dropdown-menu").forEach((details) => {
+          if (details !== exceptDetails) details.removeAttribute("open");
+          const summary = details.querySelector("summary");
+          if (summary) summary.setAttribute("aria-expanded", details.hasAttribute("open") ? "true" : "false");
+        });
+      }
+
+      function trapModalFocus(event) {
+        if (modalRoot.classList.contains("hidden") || event.key !== "Tab") return;
+        const focusables = [...modalPanel.querySelectorAll(focusableSelector)].filter((el) => !el.hasAttribute("disabled"));
+        if (!focusables.length) return;
+        const first = focusables[0];
+        const last = focusables[focusables.length - 1];
+
+        if (event.shiftKey && document.activeElement === first) {
+          event.preventDefault();
+          last.focus();
+        } else if (!event.shiftKey && document.activeElement === last) {
+          event.preventDefault();
+          first.focus();
+        }
+      }
+
+      function initKeyboardNavigation() {
+        const sideButtons = [...sideNav.querySelectorAll("button")];
+        const mobileButtons = [...mobileNav.querySelectorAll("button")];
+
+        function addArrowNavigation(buttons, nextKey, prevKey) {
+          buttons.forEach((btn, index) => {
+            btn.addEventListener("keydown", (event) => {
+              if (event.key === nextKey) {
+                event.preventDefault();
+                buttons[(index + 1) % buttons.length].focus();
+              }
+              if (event.key === prevKey) {
+                event.preventDefault();
+                buttons[(index - 1 + buttons.length) % buttons.length].focus();
+              }
+            });
+          });
+        }
+
+        addArrowNavigation(sideButtons, "ArrowDown", "ArrowUp");
+        addArrowNavigation(mobileButtons, "ArrowRight", "ArrowLeft");
+
+        document.addEventListener("keydown", (event) => {
+          if (!event.altKey) return;
+          const keyToSection = {
+            "1": "dashboard",
+            "2": "usuarios",
+            "3": "agentes",
+            "4": "skills",
+            "5": "contrataciones",
+            "6": "errores"
+          };
+          const sectionId = keyToSection[event.key];
+          if (sectionId) {
+            event.preventDefault();
+            document.getElementById(sectionId).scrollIntoView({ behavior: "smooth", block: "start" });
+          }
+        });
+      }
+
+      function handleAction(action, id) {
+        if (action === "user-detail") {
+          const u = state.users.find((item) => item.id === Number(id));
+          openModal(
+            "Detalle del usuario",
+            `
+              <div class="space-y-2">
+                <p><strong>Nombre:</strong> ${u.name}</p>
+                <p><strong>Email:</strong> ${u.email}</p>
+                <p><strong>Empresa:</strong> ${u.company}</p>
+                <p><strong>Pais:</strong> ${u.country}</p>
+                <p><strong>Plan:</strong> ${u.plan}</p>
+                <p><strong>Estado:</strong> ${u.status}</p>
+                <p><strong>Fecha de alta:</strong> ${u.joinedAt}</p>
+                <p><strong>Asientos:</strong> ${u.seats}</p>
+              </div>
+            `
+          );
+          return;
+        }
+
+        if (action === "user-delete") {
+          openModal(
+            "Eliminar usuario",
+            `<p>Accion de prototipo: el usuario #${id} quedaria marcado para eliminacion logica.</p>`
+          );
+          return;
+        }
+
+        if (action === "agent-config") {
+          const agent = state.agents.find((item) => item.id === Number(id));
+          openModal(
+            `Configurar ${agent.name}`,
+            `<p class="mb-2 text-xs uppercase tracking-wide text-slate-400">Prompt de sistema</p><pre class="whitespace-pre-wrap rounded-xl bg-slate-950/70 p-3 text-xs text-slate-100 dark:bg-slate-100 dark:text-slate-700">${agent.systemPrompt}</pre>`
+          );
+          return;
+        }
+
+        if (action === "agent-delete") {
+          openModal(
+            "Eliminar agente",
+            `<p>Accion de prototipo: el agente #${id} quedaria bloqueado para nuevas contrataciones.</p>`
+          );
+          return;
+        }
+
+        if (action === "skill-detail") {
+          const skill = state.skills.find((item) => item.id === Number(id));
+          openModal(
+            `Detalle skill: ${skill.name}`,
+            `<p><strong>Descripcion:</strong> ${skill.description}</p><p class="mt-2"><strong>Agentes habilitados:</strong> ${skill.enabled}</p>`
+          );
+          return;
+        }
+
+        if (action === "skill-delete") {
+          openModal("Eliminar skill", `<p>Accion de prototipo: la skill #${id} quedaria archivada y no disponible para nuevos agentes.</p>`);
+          return;
+        }
+
+        if (action === "contract-detail") {
+          const contract = state.contracts.find((item) => item.id === Number(id));
+          openModal(
+            `Contrato ${contract.id}`,
+            `
+              <div class="space-y-2">
+                <p><strong>Cliente:</strong> ${contract.client}</p>
+                <p><strong>Agente:</strong> ${contract.agent}</p>
+                <p><strong>Estado:</strong> ${contract.status}</p>
+                <p><strong>Periodo:</strong> ${contract.startDate} a ${contract.endDate}</p>
+                <p><strong>Total pagado:</strong> ${money(contract.totalPaid)}</p>
+                <div class="mt-3 rounded-xl border border-slate-600 p-3 dark:border-slate-300">
+                  <p class="mb-2 text-xs uppercase tracking-wide text-slate-400">Desglose de skills</p>
+                  <ul class="space-y-2">
+                    ${contract.skills.map((s) => `<li class="flex items-center justify-between rounded-lg bg-slate-800/70 px-3 py-2 dark:bg-slate-100"><span>${s.name}</span><strong>${money(s.price)}</strong></li>`).join("")}
+                  </ul>
+                </div>
+              </div>
+            `
+          );
+          return;
+        }
+
+        if (action === "error-detail") {
+          const err = state.errors.find((item) => item.id === id);
+          openModal(
+            `Traza completa ${err.id}`,
+            `
+              <div class="space-y-2">
+                <p><strong>Agente:</strong> ${err.agent}</p>
+                <p><strong>Timestamp:</strong> ${err.timestamp}</p>
+                <p><strong>Tipo:</strong> ${err.type}</p>
+                <p><strong>Gravedad:</strong> ${err.severity}</p>
+                <p><strong>Descripcion:</strong> ${err.shortDesc}</p>
+                <pre class="mt-2 whitespace-pre-wrap rounded-xl bg-slate-950/70 p-3 text-xs text-slate-100 dark:bg-slate-100 dark:text-slate-700">${err.stack}</pre>
+              </div>
+            `
+          );
+          return;
+        }
+
+        if (action === "error-resolve") {
+          const err = state.errors.find((item) => item.id === id);
+          if (err) {
+            err.resolved = true;
+            renderErrors();
+            bindActionEvents();
+            openModal("Error actualizado", `<p>El error ${id} fue marcado como resuelto.</p>`);
+          }
+        }
+      }
+
+      function bindActionEvents() {
+        document.querySelectorAll(".dropdown-menu > summary").forEach((summary) => {
+          summary.addEventListener("click", (event) => {
+            const details = event.currentTarget.parentElement;
+            const willOpen = !details.hasAttribute("open");
+            closeAllDropdowns(willOpen ? details : null);
+            window.setTimeout(() => {
+              summary.setAttribute("aria-expanded", details.hasAttribute("open") ? "true" : "false");
+            }, 0);
+          });
+        });
+
+        document.querySelectorAll(".action-item").forEach((button) => {
+          button.addEventListener("click", (event) => {
+            const action = event.currentTarget.dataset.action;
+            const id = event.currentTarget.dataset.id;
+            handleAction(action, id);
+            const details = event.currentTarget.closest("details");
+            if (details) details.removeAttribute("open");
+            closeAllDropdowns();
+          });
+        });
+
+        document.querySelectorAll(".toggle-skills").forEach((button) => {
+          button.addEventListener("click", (event) => {
+            const target = document.getElementById(event.currentTarget.dataset.target);
+            const expanded = target.style.maxHeight && target.style.maxHeight !== "0px";
+            target.style.maxHeight = expanded ? "0px" : `${target.scrollHeight}px`;
+            event.currentTarget.setAttribute("aria-expanded", expanded ? "false" : "true");
+          });
+        });
+      }
+
+      function syncThemeToggle(toggle, knob, sun, moon, isDark) {
+        if (!toggle || !knob || !sun || !moon) return;
+        toggle.setAttribute("aria-pressed", isDark ? "true" : "false");
+        knob.classList.toggle("translate-x-0.5", isDark);
+        knob.classList.toggle("translate-x-4", !isDark);
+        moon.classList.toggle("theme-option-active", isDark);
+        sun.classList.toggle("theme-option-active", !isDark);
+      }
+
+      function applyTheme(savedTheme) {
+        const html = document.documentElement;
+        const isDark = savedTheme === "dark";
+        html.classList.toggle("dark", !isDark);
+        html.dataset.theme = savedTheme;
+        html.style.colorScheme = isDark ? "dark" : "light";
+        syncThemeToggle(themeToggle, themeKnob, themeSun, themeMoon, isDark);
+        syncThemeToggle(themeToggleTablet, themeKnobTablet, themeSunTablet, themeMoonTablet, isDark);
+      }
+
+      function initTheme() {
+        const saved = localStorage.getItem("agenthub-theme") || "dark";
+        applyTheme(saved);
+
+        const toggleTheme = () => {
+          const current = document.documentElement.dataset.theme || "dark";
+          const next = current === "dark" ? "light" : "dark";
+          localStorage.setItem("agenthub-theme", next);
+          applyTheme(next);
+        };
+
+        if (themeToggle) themeToggle.addEventListener("click", toggleTheme);
+        if (themeToggleTablet) themeToggleTablet.addEventListener("click", toggleTheme);
+      }
+
+      function initModalEvents() {
+        modalClose.addEventListener("click", closeModal);
+        modalBackdrop.addEventListener("click", closeModal);
+        document.addEventListener("keydown", (event) => {
+          if (event.key === "Escape") {
+            if (!modalRoot.classList.contains("hidden")) {
+              closeModal();
+            } else {
+              closeAllDropdowns();
+            }
+          }
+          trapModalFocus(event);
+        });
+        document.addEventListener("click", (event) => {
+          const target = event.target;
+          if (!(target instanceof Element)) return;
+          if (!target.closest(".dropdown-menu")) closeAllDropdowns();
+        });
+      }
+
+      function init() {
+        renderNavigation();
+        renderMetrics();
+        renderUsers();
+        renderAgents();
+        renderSkills();
+        renderContracts();
+        renderErrors();
+        bindActionEvents();
+        initTheme();
+        initActiveSectionObserver();
+        initKeyboardNavigation();
+        initModalEvents();
+      }
+
+      init();
+    </script>
+  </body>
+</html>
