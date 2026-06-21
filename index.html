@@ -140,6 +140,18 @@
         color: #334155;
       }
 
+      html[data-theme="dark"] .table-head-icon {
+        background-color: rgba(15, 23, 42, 0.94) !important;
+        border: 1px solid rgba(45, 212, 191, 0.42);
+        color: #99f6e4 !important;
+      }
+
+      html[data-theme="light"] .table-head-icon {
+        background-color: rgba(226, 232, 240, 0.9) !important;
+        border: 1px solid rgba(148, 163, 184, 0.6);
+        color: #0f172a !important;
+      }
+
       html[data-theme="dark"] .skills-panel {
         background:
           linear-gradient(145deg, rgba(2, 6, 23, 0.75), rgba(30, 41, 59, 0.6)),
@@ -269,6 +281,28 @@
         background-color: rgba(30, 41, 59, 0.9) !important;
       }
 
+      html[data-theme="dark"] #agentsTable .toggle-skills {
+        background-color: rgba(2, 6, 23, 0.82) !important;
+        border-color: rgba(71, 85, 105, 0.82) !important;
+        color: #dbe7f5 !important;
+      }
+
+      html[data-theme="dark"] #agentsTable .toggle-skills:hover {
+        background-color: rgba(20, 184, 166, 0.12) !important;
+        border-color: rgba(45, 212, 191, 0.4) !important;
+        color: #5eead4 !important;
+      }
+
+      html[data-theme="dark"] #agentsTable .agent-skills-list {
+        color: #dbe7f5 !important;
+      }
+
+      html[data-theme="dark"] #agentsTable .agent-skill-chip {
+        background-color: rgba(15, 23, 42, 0.78) !important;
+        border: 1px solid rgba(71, 85, 105, 0.74);
+        color: #e8f0fb !important;
+      }
+
       html[data-theme="dark"] .modal-backdrop {
         background-color: rgba(2, 6, 23, 0.78) !important;
       }
@@ -281,6 +315,27 @@
       html[data-theme="dark"] #modalTitle,
       html[data-theme="dark"] #modalContent {
         color: #e8f0fb !important;
+      }
+
+      html[data-theme="dark"] #modalContent .modal-section {
+        background-color: rgba(15, 23, 42, 0.76) !important;
+        border-color: rgba(71, 85, 105, 0.82) !important;
+      }
+
+      html[data-theme="dark"] #modalContent .modal-section-label {
+        color: #cbdaf0 !important;
+      }
+
+      html[data-theme="dark"] #modalContent .modal-chip {
+        background-color: rgba(30, 41, 59, 0.88) !important;
+        border-color: rgba(71, 85, 105, 0.72) !important;
+        color: #e8f0fb !important;
+      }
+
+      html[data-theme="dark"] #modalContent .modal-code {
+        background-color: rgba(2, 6, 23, 0.9) !important;
+        border-color: rgba(71, 85, 105, 0.8) !important;
+        color: #dbe7f5 !important;
       }
 
       html[data-theme="dark"] #modalClose {
@@ -377,6 +432,27 @@
         color: #5eead4 !important;
         background-color: rgba(20, 184, 166, 0.18) !important;
         border-color: rgba(20, 184, 166, 0.35) !important;
+      }
+
+      html[data-theme="dark"] #mobileNav {
+        background-color: rgba(2, 6, 23, 0.9) !important;
+        border-color: rgba(71, 85, 105, 0.78) !important;
+      }
+
+      html[data-theme="dark"] #mobileNav .nav-link {
+        color: #dbe7f5 !important;
+      }
+
+      html[data-theme="dark"] #mobileNav .nav-link:hover {
+        color: #5eead4 !important;
+        background-color: rgba(20, 184, 166, 0.12) !important;
+        border-color: rgba(45, 212, 191, 0.34) !important;
+      }
+
+      html[data-theme="dark"] .mobile-nav-active {
+        color: #5eead4 !important;
+        background-color: rgba(20, 184, 166, 0.2) !important;
+        border-color: rgba(45, 212, 191, 0.45) !important;
       }
 
       .dark .mobile-nav-active {
@@ -1007,19 +1083,22 @@
       }
 
       function setActiveNav(sectionId) {
-        document.querySelectorAll(".nav-link").forEach((button) => {
-          const isActive = button.dataset.section === sectionId;
+        const navButtons = [...document.querySelectorAll(".nav-link")];
+
+        navButtons.forEach((button) => {
+          button.classList.remove("nav-link-active", "mobile-nav-active");
+          button.removeAttribute("aria-current");
+        });
+
+        navButtons.forEach((button) => {
+          if (button.dataset.section !== sectionId) return;
           if (button.dataset.navType === "side") {
-            button.classList.toggle("nav-link-active", isActive);
+            button.classList.add("nav-link-active");
           }
           if (button.dataset.navType === "mobile") {
-            button.classList.toggle("mobile-nav-active", isActive);
+            button.classList.add("mobile-nav-active");
           }
-          if (isActive) {
-            button.setAttribute("aria-current", "page");
-          } else {
-            button.removeAttribute("aria-current");
-          }
+          button.setAttribute("aria-current", "page");
         });
       }
 
@@ -1032,14 +1111,20 @@
         let ticking = false;
 
         const updateActiveSection = () => {
-          const viewportMark = window.scrollY + window.innerHeight * 0.33;
+          const activationLine = window.innerHeight * 0.3;
           let activeId = sectionIds[0];
+          let lastSectionAboveLine = null;
 
           sections.forEach((section) => {
-            if (section.offsetTop <= viewportMark) {
-              activeId = section.id;
+            const { top } = section.getBoundingClientRect();
+            if (top <= activationLine) {
+              lastSectionAboveLine = section;
             }
           });
+
+          if (lastSectionAboveLine) {
+            activeId = lastSectionAboveLine.id;
+          }
 
           const scrolledToBottom = window.innerHeight + window.scrollY >= document.body.scrollHeight - 4;
           if (scrolledToBottom) {
@@ -1131,7 +1216,7 @@
       }
 
       function icon(title) {
-        return `<span class="inline-flex h-6 w-6 items-center justify-center rounded-md bg-slate-700/65 text-aqua dark:bg-slate-200">${title}</span>`;
+        return `<span class="table-head-icon inline-flex h-6 w-6 items-center justify-center rounded-md text-[11px] font-semibold">${title}</span>`;
       }
 
       function buildActions(actions) {
@@ -1213,9 +1298,9 @@
                     <td data-label="Estado" class="px-4 py-3">${statusBadge(agent.status)}</td>
                     <td data-label="Skills" class="px-4 py-3">
                       <button type="button" data-target="skills-${agent.id}" aria-controls="skills-${agent.id}" aria-expanded="false" class="toggle-skills focusable rounded-lg border border-slate-500 px-2 py-1 text-xs">Ver skills</button>
-                      <div id="skills-${agent.id}" class="mt-2 max-h-0 overflow-hidden transition-all duration-300">
-                        <ul class="space-y-1 text-xs text-slate-200 dark:text-slate-700">
-                          ${agent.skills.map((skill) => `<li class="rounded-md bg-slate-700/60 px-2 py-1 dark:bg-slate-200">${skill}</li>`).join("")}
+                      <div id="skills-${agent.id}" class="agent-skills-panel mt-2 max-h-0 overflow-hidden transition-all duration-300">
+                        <ul class="agent-skills-list space-y-1 text-xs text-slate-200 dark:text-slate-700">
+                          ${agent.skills.map((skill) => `<li class="agent-skill-chip rounded-md bg-slate-700/60 px-2 py-1 dark:bg-slate-200">${skill}</li>`).join("")}
                         </ul>
                       </div>
                     </td>
@@ -1465,7 +1550,7 @@
           const agent = state.agents.find((item) => item.id === Number(id));
           openModal(
             `Configurar ${agent.name}`,
-            `<p class="mb-2 text-xs uppercase tracking-wide text-slate-400">Prompt de sistema</p><pre class="whitespace-pre-wrap rounded-xl bg-slate-950/70 p-3 text-xs text-slate-100 dark:bg-slate-100 dark:text-slate-700">${agent.systemPrompt}</pre>`
+            `<p class="modal-section-label mb-2 text-xs uppercase tracking-wide text-slate-400">Prompt de sistema</p><pre class="modal-code whitespace-pre-wrap rounded-xl border border-slate-700/70 bg-slate-950/70 p-3 text-xs text-slate-100 dark:bg-slate-100 dark:text-slate-700">${agent.systemPrompt}</pre>`
           );
           return;
         }
@@ -1503,10 +1588,10 @@
                 <p><strong>Estado:</strong> ${contract.status}</p>
                 <p><strong>Periodo:</strong> ${contract.startDate} a ${contract.endDate}</p>
                 <p><strong>Total pagado:</strong> ${money(contract.totalPaid)}</p>
-                <div class="mt-3 rounded-xl border border-slate-600 p-3 dark:border-slate-300">
-                  <p class="mb-2 text-xs uppercase tracking-wide text-slate-400">Desglose de skills</p>
+                <div class="modal-section mt-3 rounded-xl border border-slate-600 p-3 dark:border-slate-300">
+                  <p class="modal-section-label mb-2 text-xs uppercase tracking-wide text-slate-400">Desglose de skills</p>
                   <ul class="space-y-2">
-                    ${contract.skills.map((s) => `<li class="flex items-center justify-between rounded-lg bg-slate-800/70 px-3 py-2 dark:bg-slate-100"><span>${s.name}</span><strong>${money(s.price)}</strong></li>`).join("")}
+                    ${contract.skills.map((s) => `<li class="modal-chip flex items-center justify-between rounded-lg border border-slate-700/65 bg-slate-800/70 px-3 py-2 dark:bg-slate-100"><span>${s.name}</span><strong>${money(s.price)}</strong></li>`).join("")}
                   </ul>
                 </div>
               </div>
@@ -1526,7 +1611,7 @@
                 <p><strong>Tipo:</strong> ${err.type}</p>
                 <p><strong>Gravedad:</strong> ${err.severity}</p>
                 <p><strong>Descripcion:</strong> ${err.shortDesc}</p>
-                <pre class="mt-2 whitespace-pre-wrap rounded-xl bg-slate-950/70 p-3 text-xs text-slate-100 dark:bg-slate-100 dark:text-slate-700">${err.stack}</pre>
+                <pre class="modal-code mt-2 whitespace-pre-wrap rounded-xl border border-slate-700/70 bg-slate-950/70 p-3 text-xs text-slate-100 dark:bg-slate-100 dark:text-slate-700">${err.stack}</pre>
               </div>
             `
           );
